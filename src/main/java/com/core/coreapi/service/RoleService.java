@@ -1,6 +1,6 @@
 package com.core.coreapi.service;
 
-import com.core.coreapi.domain.entity.User;
+import com.core.coreapi.domain.entity.Role;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,7 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author sstang
  * @since 2020-01-01
  */
-public interface UserService extends IService<User> {
+public interface RoleService extends IService<Role> {
 
-    public User findByUserName(String userName);
 }

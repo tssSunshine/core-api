@@ -4,6 +4,7 @@ import com.core.coreapi.dao.UserMapper;
 import com.core.coreapi.domain.entity.User;
 import com.core.coreapi.service.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author sstang
- * @since 2019-10-25
+ * @since 2020-01-01
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
@@ -22,7 +23,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private UserMapper userMapper;
 
     @Override
-    public User findByName(String userName) {
+    public User findByUserName(String userName) {
+        if (StringUtils.isBlank(userName)) {
+            return null;
+        }
         return userMapper.findByName(userName);
     }
 }

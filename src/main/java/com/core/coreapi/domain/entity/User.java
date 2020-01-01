@@ -9,16 +9,16 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- *  用户信息实体类
+ * 
  * </p>
  *
  * @author sstang
- * @since 2019-10-25
+ * @since 2020-01-01
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class User implements Serializable {
+public class User extends Model<User> {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,5 +31,29 @@ public class User implements Serializable {
     private String phone;
 
     private Integer sex;
+
+    @TableField("realName")
+    private String realName;
+
+    @TableField("passWord")
+    private String passWord;
+
+    private String email;
+
+    private String photo;
+
+    @TableField("createTime")
+    private String createTime;
+
+    @TableField("updateTime")
+    private String updateTime;
+
+    private Integer status;
+
+
+    @Override
+    protected Serializable pkVal() {
+        return null;
+    }
 
 }
