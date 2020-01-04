@@ -2,8 +2,11 @@ package com.core.coreapi.controller;
 
 
 import com.core.coreapi.domain.entity.Department;
+import com.core.coreapi.domain.entity.User;
 import com.core.coreapi.domain.pojo.DepartmentVO;
+import com.core.coreapi.domain.pojo.UserVO;
 import com.core.coreapi.service.DepartmentService;
+import com.core.coreapi.service.UserService;
 import com.core.coreapi.util.DateUtil;
 import com.core.coreapi.util.resp.ResponseCode;
 import com.core.coreapi.util.resp.ServerResponse;
@@ -37,6 +40,8 @@ public class DepartmentController {
 
     @Autowired
     private DepartmentService departmentService;
+    @Autowired
+    private UserService userService;
 
     @ApiOperation(value = "保存部门信息", notes = "保存部门信息", httpMethod = "POST")
     @CrossOrigin

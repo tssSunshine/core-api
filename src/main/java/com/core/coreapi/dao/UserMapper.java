@@ -2,7 +2,7 @@ package com.core.coreapi.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.core.coreapi.domain.entity.User;
-import com.core.coreapi.domain.pojo.UserVO;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -17,9 +17,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserMapper extends BaseMapper<User> {
 
-    @Select("select * from user where userName = #{userName}")
-    User findByName(String userName);
+    User findByName(@Param("userName") String userName);
 
-    UserVO findUserInfo(String userName);
+    User findUserInfo(@Param("userName") String userName);
 
 }

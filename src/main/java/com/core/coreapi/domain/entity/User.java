@@ -1,8 +1,14 @@
 package com.core.coreapi.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.core.coreapi.domain.pojo.RoleVO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -13,7 +19,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author sstang
- * @since 2020-01-01
+ * @since 2020-01-02
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -22,8 +28,8 @@ public class User extends Model<User> {
 
     private static final long serialVersionUID = 1L;
 
-    @TableField("userId")
-    private String userId;
+    @TableId(value = "userId", type = IdType.AUTO)
+    private Integer userId;
 
     @TableField("userName")
     private String userName;
@@ -50,10 +56,12 @@ public class User extends Model<User> {
 
     private Integer status;
 
+    private List<Role> roles = new ArrayList<>();
+
 
     @Override
     protected Serializable pkVal() {
-        return null;
+        return this.userId;
     }
 
 }

@@ -2,8 +2,10 @@ package com.core.coreapi.shiro;
 
 import com.alibaba.fastjson.JSONObject;
 import com.core.coreapi.domain.entity.Permission;
+import com.core.coreapi.domain.entity.Role;
 import com.core.coreapi.domain.entity.User;
 import com.core.coreapi.domain.pojo.RoleVO;
+import com.core.coreapi.domain.pojo.UserVO;
 import com.core.coreapi.service.UserService;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -31,7 +33,6 @@ public class Md5Realm extends AuthorizingRealm {
      * 延迟加载bean,解决缓存Cache不能正常使用;事务Transaction注解不能正常运行
      */
     @Autowired
-    @Lazy
     private UserService userService;
 
     /**
@@ -41,23 +42,14 @@ public class Md5Realm extends AuthorizingRealm {
      * 验证通过后会用户保存在缓存中的
      */
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         logger.info("##################执行Shiro登录认证##################");
-        //获取用户输入的token
-        UsernamePasswordToken utoken = (UsernamePasswordToken) token;
-        String username = utoken.getUsername();
-        //查询数据库
+        UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+        String username = token.getUsername();
         User user = userService.findByUserName(username);
-        //放入shiro.调用CredentialsMatcher检验密码
-        if (user != null) {
-            // 若存在，将此用户存放到登录认证info中，无需自己做密码对比，Shiro会为我们进行密码对比校验
-            // return new SimpleAuthenticationInfo(user,user.getPassWord(),this.getClass().getName());
-            //加SALT，这里的参数要给个唯一的;
-            ByteSource credentialsSalt = ByteSource.Util.bytes(user.getUserName());
-            //参数realmName: 当前 realm对象的name.调用父类的getName()方法即可
-            return new SimpleAuthenticationInfo(user, user.getPassWord(), credentialsSalt, this.getClass().getName());
-        }
-        return null;
+        SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(username, user.getPassWord(), getName());
+        simpleAuthenticationInfo.setCredentialsSalt(ByteSource.Util.bytes(SALT));
+        return simpleAuthenticationInfo;
     }
 
     /**
@@ -72,23 +64,20 @@ public class Md5Realm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principal) {
-        //获取session中的用户，以下3种都可以
-        // User user=(User) principal.getPrimaryPrincipal();
-        //String userName=(String) SecurityUtils.getSubject().getPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         User user = (User) principal.fromRealm(this.getClass().getName()).iterator().next();
         //查询数据库
-        user = userService.findByUserName(user.getUserName());
+        user = userService.findUserInfo(user.getUserName());
         logger.info("##################执行Shiro权限授权##################user info is：{}" + JSONObject.toJSONString(user));
         Set<String> userPermissions = new HashSet<String>();
         Set<String> userRoles = new HashSet<String>();
-//        for (RoleVO role : user.getRoles()) {
-//            userRoles.add(role.getRoleName());
-//            List<Permission> rolePermissions = role.getPermissions();
-//            for (Permission permission : rolePermissions) {
-//                userPermissions.add(permission.getPermName());
-//            }
-//        }
+        for (Role role : user.getRoles()) {
+            userRoles.add(role.getRoleName());
+            List<Permission> rolePermissions = role.getPermissions();
+            for (Permission permission : rolePermissions) {
+                userPermissions.add(permission.getPermName());
+            }
+        }
         //角色名集合
         info.setRoles(userRoles);
         //权限名集合,将权限放入shiro中,
@@ -96,4 +85,7 @@ public class Md5Realm extends AuthorizingRealm {
         info.addStringPermissions(userPermissions);
         return info;
     }
+
+    private static final String SALT = "abc";
+    private static final int hashIterations = 2;
 }

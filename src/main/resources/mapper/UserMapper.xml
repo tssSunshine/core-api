@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.core.coreapi.dao.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="User" type="com.core.coreapi.domain.entity.User">
+        <id column="userId" property="userId" />
+        <result column="userName" property="userName" />
+        <result column="phone" property="phone" />
+        <result column="sex" property="sex" />
+        <result column="realName" property="realName" />
+        <result column="passWord" property="passWord" />
+        <result column="email" property="email" />
+        <result column="photo" property="photo" />
+        <result column="createTime" property="createTime" />
+        <result column="updateTime" property="updateTime" />
+        <result column="status" property="status" />
+    </resultMap>
+    <resultMap id="UserMap" type="com.core.coreapi.domain.entity.User" >
+        <id column="userId" property="userId" />
+        <result column="userName" property="userName" />
+        <result column="phone" property="phone" />
+        <result column="sex" property="sex" />
+        <result column="realName" property="realName" />
+        <result column="passWord" property="passWord" />
+        <result column="email" property="email" />
+        <result column="photo" property="photo" />
+        <result column="createTime" property="createTime" />
+        <result column="updateTime" property="updateTime" />
+        <result column="status" property="status" />
+        <collection property="roles" ofType="com.core.coreapi.domain.entity.Role">
+            <id column="roleId" property="roleId" />
+            <result column="roleName" property="roleName" />
+            <result column="roleDesc" property="roleDesc" />
+            <collection property="permissions" ofType="com.core.coreapi.domain.entity.Permission">
+                <id column="permId" property="permId" />
+                <result column="permName" property="permName" />
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="findByName" parameterType="java.lang.String" resultMap="User" >
+      select * from user where userName = #{userName}
+    </select>
+
+    <!--根据用户名查询该用户的所有角色和权限-->
+    <select id="findUserInfo" parameterType="java.lang.String" resultMap="UserMap" >
+        SELECT u.*,r.*,p.* FROM user u inner join user_role rel on u.userId = rel.userId
+        inner join role r on rel.roleId = r.roleId INNER JOIN role_permission rp on rp.roleId=r.roleId
+        INNER JOIN permission p on p.permId=rp.permId WHERE u.userName=#{userName}
+    </select>
+
+</mapper>

@@ -19,7 +19,7 @@ spring:
 
 #================================================= mybatis-plus start =================================================
 mybatis-plus:
-  mapper-locations: classpath:mapping/*Mapper.xml
+  mapper-locations: classpath:mapper/*Mapper.xml
   # 实体扫描，多个package用逗号或者分号分隔
   type-aliases-package: com.core.coreapi.pojo
   configuration:

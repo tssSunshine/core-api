@@ -7,6 +7,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,7 +17,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author sstang
- * @since 2020-01-01
+ * @since 2020-01-02
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
@@ -28,5 +31,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return null;
         }
         return userMapper.findByName(userName);
+    }
+
+    @Override
+    public User findUserInfo(String userName) {
+       if (StringUtils.isBlank(userName)) {
+           return null;
+       }
+       return userMapper.findUserInfo(userName);
     }
 }
