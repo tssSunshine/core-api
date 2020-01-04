@@ -10,6 +10,7 @@ import com.core.coreapi.service.UserService;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
@@ -88,4 +89,12 @@ public class Md5Realm extends AuthorizingRealm {
 
     private static final String SALT = "abc";
     private static final int hashIterations = 2;
+
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        Md5Hash md5Hash = new Md5Hash("123456", SALT, hashIterations);//22d70c2e5b86d3c9f25735ebbabf40af
+        System.out.println(md5Hash);
+    }
 }
